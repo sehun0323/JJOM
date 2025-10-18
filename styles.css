@@ -1,0 +1,50 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background-color: #f4f4f9;
+    padding: 20px;
+}
+
+h1 {
+    color: #004a99;
+    margin-bottom: 20px;
+}
+
+#canvasContainer {
+    margin-top: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+#imageCanvas {
+    background-color: #ffffff; 
+    border: 1px solid #ddd;
+    display: block;
+}
+
+#instructionText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #999;
+    font-size: 1.1em;
+    padding: 10px;
+    pointer-events: none;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #cc0000;
+    color: white;
+}
