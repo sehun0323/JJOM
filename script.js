@@ -1,37 +1,4 @@
-const uploader = document.getElementById('imageUploader');
-const canvas = document.getElementById('imageCanvas');
-const ctx = canvas.getContext('2d');
-const instructionText = document.getElementById('instructionText');
-let carImage = new Image(); 
-const MAX_WIDTH = 800; 
-
-// 이미지 업로드 핸들러
-uploader.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        carImage.onload = () => {
-            // 이미지 비율 유지 및 캔버스 크기 조정
-            const scaleFactor = Math.min(MAX_WIDTH / carImage.width, 1);
-            const displayWidth = carImage.width * scaleFactor;
-            const displayHeight = carImage.height * scaleFactor;
-
-            canvas.width = displayWidth;
-            canvas.height = displayHeight;
-
-            // 이미지를 캔버스에 그리기
-            ctx.drawImage(carImage, 0, 0, displayWidth, displayHeight);
-            
-            // 안내 텍스트 숨기기
-            instructionText.style.display = 'none';
-        };
-        carImage.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-});
-
+// ... (이전 코드 생략) ...
 
 // 곡선(빨간 선)을 모델링하여 그리는 함수 (수학적 모델링)
 function drawCurve() {
@@ -49,28 +16,29 @@ function drawCurve() {
     ctx.lineCap = 'round';   
     
     // 3. 3차 베지어 곡선(Cubic Bezier Curve) 공식 적용
-    ctx.beginPath();
-    
-    // 각 좌표는 이미지 크기 대비 상대적인 위치(0.0~1.0)로 설정되어 어떤 이미지에도 적용됩니다.
-    // 좌표는 첫 번째 이미지의 본넷 곡선에 맞추어 설정된 비율입니다.
 
-    // 시작점 (P0)
-    const P0_x = canvas.width * 0.05;
-    const P0_y = canvas.height * 0.50; 
+    // P0: 시작점 (Start Point) - 헤드라이트 위 본넷 시작점
+    const P0_x = canvas.width * 0.08;  // 좌측에서 8% 지점
+    const P0_y = canvas.height * 0.45;  // 상단에서 45% 지점 (더 낮춰 본넷에 근접)
+    
+    // P3: 끝점 (End Point) - A필러 시작점
+    const P3_x = canvas.width * 0.60;  // 좌측에서 60% 지점 (더 짧고 정확하게)
+    const P3_y = canvas.height * 0.33;  // 상단에서 33% 지점 (높이를 올려 지붕 라인과 구분)
+    
+    // P1: 제어점 1 (Control Point 1) - 초반 곡률 제어
+    // P0 근처에서 곡선이 급격히 솟아오르는 것을 방지하기 위해 P0에 가깝고 높이는 P3에 가깝게 조정합니다.
+    const P1_x = canvas.width * 0.30; 
+    const P1_y = canvas.height * 0.30; // 이전보다 훨씬 낮춰 본넷 곡면에 붙임
+    
+    // P2: 제어점 2 (Control Point 2) - 후반 곡률 제어
+    // P3 근처에서 부드럽게 A필러로 이어지도록 조정합니다.
+    const P2_x = canvas.width * 0.50; 
+    const P2_y = canvas.height * 0.28; // 가장 높은 점(크라운)을 P1과 P2 사이에 만듭니다.
+
+    ctx.beginPath();
     ctx.moveTo(P0_x, P0_y); 
     
-    // 끝점 (P3)
-    const P3_x = canvas.width * 0.65; 
-    const P3_y = canvas.height * 0.35;
-    
-    // 제어점 1 (P1)
-    const P1_x = canvas.width * 0.25; 
-    const P1_y = canvas.height * 0.30; 
-    
-    // 제어점 2 (P2)
-    const P2_x = canvas.width * 0.45; 
-    const P2_y = canvas.height * 0.25; 
-
+    // 3차 베지어 곡선 정의
     ctx.bezierCurveTo(
         P1_x, P1_y, 
         P2_x, P2_y, 
@@ -79,4 +47,7 @@ function drawCurve() {
     
     ctx.stroke();
     ctx.closePath();
+    
+    // 개발자/Validator용 로그
+    console.log("베지어 곡선 파라미터 업데이트됨:", {P0:[P0_x, P0_y], P1:[P1_x, P1_y], P2:[P2_x, P2_y], P3:[P3_x, P3_y]});
 }
