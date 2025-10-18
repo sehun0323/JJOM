@@ -20,6 +20,9 @@ h1 {
 }
 
 #imageCanvas {
+    /* 미리보기 안 되는 문제 해결을 위해 최소 크기 설정 */
+    min-width: 400px; 
+    min-height: 250px;
     background-color: #ffffff; 
     border: 1px solid #ddd;
     display: block;
